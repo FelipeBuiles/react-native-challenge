@@ -1,9 +1,3 @@
-# Toy Blocks
+# FullStack Labs Coding Challenge
 
-## Installation
-
-1. `git clone repo`
-2. `cd react-native-challenge`
-3. `npm i`
-4. `cd ios && pod install && cd ..`
-5. `npx react-native run-ios` or `npx react-native run-android`
+![Demo](https://raw.githubusercontent.com/FelipeBuiles/react-native-challenge/master/NodesApp.gif)
