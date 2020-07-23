@@ -11,7 +11,7 @@ describe("Actions", () => {
     name: null
   };
 
-  it("should create an action to save fuel savings", () => {
+  it("should create an action to start checking node", () => {
     const dispatch = jest.fn();
     const expected = {
       type: ActionTypes.CHECK_NODE_STATUS_START,

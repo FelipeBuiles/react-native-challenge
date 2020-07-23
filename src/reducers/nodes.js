@@ -2,11 +2,14 @@ import {
   CHECK_NODE_STATUS_START,
   CHECK_NODE_STATUS_SUCCESS,
   CHECK_NODE_STATUS_FAILURE,
-} from '../constants/actionTypes';
-import initialState from './initialState';
+  FETCH_NODE_BLOCKS_START,
+  FETCH_NODE_BLOCKS_SUCCESS,
+  FETCH_NODE_BLOCKS_FAILURE
+} from "../constants/actionTypes";
+import initialState from "./initialState";
 
 export default function nodesReducer(state = initialState().nodes, action) {
-  let list, nodeIndex;
+  let list, nodeIndex, nodeBlocks;
   switch (action.type) {
     case CHECK_NODE_STATUS_START:
       list = state.list;
@@ -16,14 +19,14 @@ export default function nodesReducer(state = initialState().nodes, action) {
           ...state.list.slice(0, nodeIndex),
           {
             ...state.list[nodeIndex],
-            loading: true,
+            loading: true
           },
-          ...state.list.slice(nodeIndex + 1),
+          ...state.list.slice(nodeIndex + 1)
         ];
       }
       return {
         ...state,
-        list,
+        list
       };
     case CHECK_NODE_STATUS_SUCCESS:
       list = state.list;
@@ -35,14 +38,14 @@ export default function nodesReducer(state = initialState().nodes, action) {
             ...state.list[nodeIndex],
             online: true,
             name: action.res.node_name,
-            loading: false,
+            loading: false
           },
-          ...state.list.slice(nodeIndex + 1),
+          ...state.list.slice(nodeIndex + 1)
         ];
       }
       return {
         ...state,
-        list,
+        list
       };
     case CHECK_NODE_STATUS_FAILURE:
       list = state.list;
@@ -53,14 +56,80 @@ export default function nodesReducer(state = initialState().nodes, action) {
           {
             ...state.list[nodeIndex],
             online: false,
-            loading: false,
+            loading: false
           },
-          ...state.list.slice(nodeIndex + 1),
+          ...state.list.slice(nodeIndex + 1)
         ];
       }
       return {
         ...state,
-        list,
+        list
+      };
+    case FETCH_NODE_BLOCKS_START:
+      list = state.list;
+      nodeIndex = state.list.findIndex(p => p.url === action.node.url);
+      if (nodeIndex >= 0) {
+        nodeBlocks = state.list[nodeIndex].blocks;
+        list = [
+          ...state.list.slice(0, nodeIndex),
+          {
+            ...state.list[nodeIndex],
+            blocks: {
+              ...nodeBlocks,
+              loading: true
+            }
+          },
+          ...state.list.slice(nodeIndex + 1)
+        ];
+      }
+      return {
+        ...state,
+        list
+      };
+    case FETCH_NODE_BLOCKS_SUCCESS:
+      list = state.list;
+      nodeIndex = state.list.findIndex(p => p.url === action.node.url);
+      if (nodeIndex >= 0) {
+        nodeBlocks = state.list[nodeIndex].blocks;
+        list = [
+          ...state.list.slice(0, nodeIndex),
+          {
+            ...state.list[nodeIndex],
+            blocks: {
+              ...nodeBlocks,
+              loading: false,
+              error: false,
+              data: action.res.data
+            }
+          },
+          ...state.list.slice(nodeIndex + 1)
+        ];
+      }
+      return {
+        ...state,
+        list
+      };
+    case FETCH_NODE_BLOCKS_FAILURE:
+      list = state.list;
+      nodeIndex = state.list.findIndex(p => p.url === action.node.url);
+      if (nodeIndex >= 0) {
+        nodeBlocks = state.list[nodeIndex].blocks;
+        list = [
+          ...state.list.slice(0, nodeIndex),
+          {
+            ...state.list[nodeIndex],
+            blocks: {
+              ...nodeBlocks,
+              loading: false,
+              error: true
+            }
+          },
+          ...state.list.slice(nodeIndex + 1)
+        ];
+      }
+      return {
+        ...state,
+        list
       };
     default:
       return state;
